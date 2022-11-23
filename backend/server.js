@@ -6,10 +6,9 @@ import credentials from './middlewares/credentials.js';
 import corsOptions from './config/corsOptions.js';
 
 import  sequelize from './models/index.js'
+import { createDB } from './models/createDB.js'
 
-import User from './models/user.model.js';
-import RefreshToken from './models/refreshTokens.model.js';
-
+await createDB(sequelize);
 /* 
 import rootRoutes from './routes/root.routes.js';          
 import authRoutes from './routes/auth.routes.js';

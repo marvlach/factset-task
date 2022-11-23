@@ -9,7 +9,4 @@ const sequelize = new Sequelize('', 'root', '123', {
     dialect: 'mysql'
 });
 
-await sequelize.query("CREATE DATABASE IF NOT EXISTS `FSDB`;");
-await sequelize.query("USE `FSDB`;");
-
 export default sequelize
