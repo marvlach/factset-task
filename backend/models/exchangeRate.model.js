@@ -1,7 +1,12 @@
-import { DataTypes, Model } from 'sequelize';
+import { Model } from 'sequelize';
 
-const ExchangeRateCreator = (sequelize) => {
-    class ExchangeRate extends Model {}
+const ExchangeRateCreator = (sequelize, DataTypes) => {
+    class ExchangeRate extends Model {
+        static associate({ Currency }) {
+            this.belongsTo(Currency, {as: 'from'});
+            this.belongsTo(Currency, {as: 'to'});
+        }
+    }
 
     ExchangeRate.init({
         rate: {

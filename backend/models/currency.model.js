@@ -1,7 +1,7 @@
-import { DataTypes, Model } from 'sequelize';
+import { Model } from 'sequelize';
 
-const CurrencyCreator = (sequelize) => {
-    class Currency extends Model {}
+const CurrencyCreator = (sequelize, DataTypes) => {
+    class Currency extends Model { }
 
     Currency.init({
         name: {

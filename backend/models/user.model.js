@@ -1,7 +1,11 @@
-import { DataTypes, Model } from 'sequelize';
+import { Model } from 'sequelize';
 
-const UserCreator = (sequelize) => {
-    class User extends Model {}
+const UserCreator = (sequelize, DataTypes) => {
+    class User extends Model {
+        static associate({ RefreshToken }) {
+            this.hasMany(RefreshToken);
+        }
+    }
 
     User.init({
         username: {
@@ -10,7 +14,7 @@ const UserCreator = (sequelize) => {
             unique: true,
             notEmpty: true,
         },
-        hashedPassword: {
+        password: {
             type: DataTypes.STRING,
             /* set(value) {
                 // Storing passwords in plaintext in the database is terrible.
@@ -35,7 +39,6 @@ const UserCreator = (sequelize) => {
     return User
 }
 export default UserCreator
-// User.hasMany(RefreshToken);
 
 
 

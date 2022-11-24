@@ -6,6 +6,7 @@ import credentials from './middlewares/credentials.js';
 import corsOptions from './config/corsOptions.js';
 
 import  sequelize from './models/index.js'
+
 import { createDB } from './models/createDB.js'
 
 await createDB(sequelize);
@@ -67,21 +68,21 @@ try {
 } catch (error) {
     console.error('Unable to connect to the database:', error);
 }
-/* (async function test() {
+(async function test() {
     try {
         
       await sequelize.sync({ force: true });
       // seed
-      const author = await User.create({
+      const author = await sequelize.models.User.create({
         username: "marios",
         password: "12345!!asdF",
       });
      
-      console.log(await User.findAll())
+      console.log(await sequelize.models.User.findAll())
     } catch (error) {
       console.log(error);
     } 
-})(); */
+})();
 
 app.listen(PORT, (error) =>{
     if(!error)

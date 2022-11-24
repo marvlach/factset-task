@@ -1,20 +1,20 @@
-import { DataTypes, Model } from 'sequelize';
+import { Model } from 'sequelize';
 
 
-const RefreshTokenCreator = (sequelize) => {
-    class RefreshToken extends Model {}
+const RefreshTokenCreator = (sequelize, DataTypes) => {
+    class RefreshToken extends Model {
+        static associate({ User }) {
+            this.belongsTo(User)
+        }
+      
+        /* toJSON() {
+            return { ...this.get(), id: undefined, userId: undefined }
+        } */
+
+    }
 
     RefreshToken.init({
-        /* userId: {
-            type: DataTypes.INTEGER,
-            references: {
-            // This is a reference to another model
-            model: User,
         
-            // This is the column name of the referenced model
-            key: 'id',
-            }
-        }, */
         token: {
             type: DataTypes.STRING,
             allowNull: false
