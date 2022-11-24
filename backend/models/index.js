@@ -9,25 +9,24 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config();
 
+// define sequelize object
 const sequelize = new Sequelize('', 'root', '123', {
     host: 'localhost',
     dialect: 'mysql'
 });
 
+// get .model.js file names
+const modelFiles = fs.readdirSync(__dirname).filter(file => file.slice(-9) === '.model.js')
 
-const modelFiles = fs.readdirSync(__dirname)
-    .filter(file => file.slice(-3) === '.js' && file.slice(-9, -3) === '.model')
-
+// import modelCreators dynamically
 for await (const modelName of modelFiles) {
-    console.log(path.join(__dirname, modelName))
     const modelModule = await import(path.join(__dirname, modelName));
     const modelCreator = modelModule.default;
     const model = modelCreator(sequelize, Sequelize.DataTypes);
     sequelize.models[model.name] = model;
-    //console.log(model.name)
 }
 
-
+// run .associate() method on every model
 Object.keys(sequelize.models).forEach(modelName => {
     if (sequelize.models[modelName].associate) {
         sequelize.models[modelName].associate(sequelize.models)

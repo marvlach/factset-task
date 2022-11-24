@@ -23,7 +23,11 @@ const UserCreator = (sequelize, DataTypes) => {
             }, */
             allowNull: false,
             notEmpty: true,
-        }
+        },
+        isAdmin: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
     }, {
         /* hooks: {
             beforeValidate: (user, options) => {
