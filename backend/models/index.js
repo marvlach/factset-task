@@ -16,11 +16,7 @@ const sequelize = new Sequelize('', 'root', '123', {
 
 
 const modelFiles = fs.readdirSync(__dirname)
-    .filter(file => {
-        return (
-            file.slice(-3) === '.js' && file.slice(-9, -3) === '.model'
-        )
-    })
+    .filter(file => file.slice(-3) === '.js' && file.slice(-9, -3) === '.model')
 
 for await (const modelName of modelFiles) {
     console.log(path.join(__dirname, modelName))
