@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
 dotenv.config();
 
 // define sequelize object
-const sequelize = new Sequelize('', 'root', '123', {
+const sequelize = new Sequelize('FSDB', 'root', '123', {
     host: 'localhost',
     dialect: 'mysql'
 });

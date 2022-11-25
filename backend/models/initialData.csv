@@ -1,0 +1,7 @@
+FROM,TO,RATE
+Euro,USDollar,1.3764
+Euro,SwissFranc,1.2079 
+Euro,BritishPound,0.8731
+USDollar,JPY,76.7200
+SwissFranc,USDollar,1.1379
+BritishPound,CAD,1.5648

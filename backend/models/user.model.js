@@ -1,9 +1,14 @@
 import { Model } from 'sequelize';
+import bcryptjs from 'bcryptjs';
 
 const UserCreator = (sequelize, DataTypes) => {
     class User extends Model {
         static associate({ RefreshToken }) {
-            this.hasMany(RefreshToken);
+            this.hasMany(RefreshToken, {
+                foreignKey: 'userId',
+                onDelete: 'RESTRICT',
+                onUpdate: 'RESTRICT'
+            });
         }
     }
 
@@ -11,32 +16,44 @@ const UserCreator = (sequelize, DataTypes) => {
         username: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true,
-            notEmpty: true,
+            unique: {
+                arg: true,
+                msg: 'This username is already taken.'
+            },
+            validate: {
+                len: {
+                    args: [3,],
+                    msg: "Username must be at least 3 characters long"
+                }
+            },
         },
         password: {
             type: DataTypes.STRING,
-            /* set(value) {
-                // Storing passwords in plaintext in the database is terrible.
-                // Hashing the value with an appropriate cryptographic hash function is better.
-                this.setDataValue('password', hash(value));
-            }, */
             allowNull: false,
-            notEmpty: true,
+            validate: {
+                len: {
+                    args: [10,],
+                    msg: "Password must be at least 10 characters long"
+                }
+            },        
         },
         isAdmin: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
     }, {
-        /* hooks: {
+        hooks: {
             beforeValidate: (user, options) => {
-            user.mood = 'happy';
+                user.username = user.username.trim();
             },
-            afterValidate: (user, options) => {
-            user.username = 'Toni';
+            beforeSave: (user, options) => {
+                if (!user.changed("password")) { 
+                    return;
+                }
+                const salt = bcryptjs.genSaltSync();
+                user.password = bcryptjs.hashSync(user.password, salt);
             }
-        }, */
+        },
         sequelize, 
         modelName: 'User' 
     })

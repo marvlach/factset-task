@@ -4,7 +4,9 @@ import { Model } from 'sequelize';
 const RefreshTokenCreator = (sequelize, DataTypes) => {
     class RefreshToken extends Model {
         static associate({ User }) {
-            this.belongsTo(User)
+            this.belongsTo(User, {
+                foreignKey: 'userId'
+            })
         }
       
         /* toJSON() {

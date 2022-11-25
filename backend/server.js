@@ -10,9 +10,9 @@ import  sequelize from './models/index.js'
 import { createDB } from './models/createDB.js'
 
 await createDB(sequelize);
+import userRoutes from './routes/user.routes.js';
+import rootRoutes from './routes/root.routes.js';   
 /* 
-import rootRoutes from './routes/root.routes.js';          
-import authRoutes from './routes/auth.routes.js';
 import personRoutes from './routes/person.routes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
  */
@@ -48,8 +48,10 @@ app.use(cookieParser());
 app.set('query parser', 'simple');
 
 // ROUTES
-/* app.use('/', rootRoutes);
-app.use('/auth', authRoutes); */
+app.use('/', rootRoutes);
+app.use('/user', userRoutes);
+
+
 
 app.all('*', (req, res) => {
     res.status(404).json({ "error": "404 Not Found" });
@@ -68,7 +70,7 @@ try {
 } catch (error) {
     console.error('Unable to connect to the database:', error);
 }
-(async function test() {
+/* (async function test() {
     try {
         
       await sequelize.sync({ force: true });
@@ -82,7 +84,7 @@ try {
     } catch (error) {
       console.log(error);
     } 
-})();
+})(); */
 
 app.listen(PORT, (error) =>{
     if(!error)
