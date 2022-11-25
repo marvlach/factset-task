@@ -1,9 +1,5 @@
 import User from '../models/user.model.js';
 import jwt from "jsonwebtoken";
-import dotenv from 'dotenv';
-dotenv.config();
-
-const secret = process.env.JWT_SECRET;
 
 export const verifyAccessToken = (req, res, next) => {
     try {
@@ -15,14 +11,12 @@ export const verifyAccessToken = (req, res, next) => {
 
         const token = authHeader.split(' ')[1];
 
-        jwt.verify(token, secret, (err, decoded) => {
-            if (err) {
-                throw new Error("Unauthorized user")
-            }
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
 
-            req.userId = decoded.id;
-            next();
-        });
+        req.userId = decoded.id;
+        
+        next();
+       
     } catch (error) {
         return res.status(401).json({ 'message': error.message});
     }    

@@ -3,7 +3,36 @@ import bcryptjs from 'bcryptjs'
 import sequelize from "../models/index.js";
 
 
-// POST auth/signup
+
+// GET user/
+export const getUser = async (req, res, next) => {
+    try {
+
+        if (!req.userId) {
+            throw new Error('This is a protected route. Use it with verifyAccessToken.');
+        }
+
+        const foundUser = await sequelize.models.User.findOne({
+            attributes: ['id', 'username', 'isAdmin'],
+            where: {
+                id: req.userId
+            }
+            
+        })
+
+        if (!foundUser) {
+            throw new Error('User has been deleted.');
+        }
+
+        res.status(200).json(foundUser);
+
+    } catch (err) {
+        res.status(404).json({ 'message': err.message });
+    } 
+}
+
+
+// POST user/signup
 export const signupUser = async (req, res, next) => {
     try {
         
@@ -23,7 +52,7 @@ export const signupUser = async (req, res, next) => {
     } 
 }
 
-// POST auth/login
+// POST user/login
 export const loginUser = async (req, res, next) => {
     try {
         const cookies = req.cookies;
@@ -143,7 +172,7 @@ export const logoutUser = async (req, res) => {
 }
 
 
-// POST /refresh
+// POST user/refresh
 export const refreshToken = async (req, res) => {
 
     try {
@@ -168,21 +197,14 @@ export const refreshToken = async (req, res) => {
         // Detected refresh token reuse
         if (!foundRefreshToken) {
             // get hacked user id from decoding the refresh token
-            jwt.verify(
-                refreshToken,
-                process.env.REFRESH_TOKEN_SECRET,
-                async (err, decoded) => {
-                    if (err) {
-                        return res.status(403).json({ 'message': 'Forbidden'});
-                    }
-                    // Delete refresh tokens of hacked user
-                    await sequelize.models.RefreshToken.destroy({
-                        where: {
-                            userId: decoded.id,
-                        }
-                    })
+            const decoded = jwt.verify( refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+            // Delete all refresh tokens of hacked user
+            await sequelize.models.RefreshToken.destroy({
+                where: {
+                    userId: decoded.id,
                 }
-            )
+            })
             return res.status(403).json({ 'message': 'Forbidden'});
         }
 
@@ -196,40 +218,38 @@ export const refreshToken = async (req, res) => {
             }
         })
 
-        // evaluate jwt 
-        jwt.verify( 
-            refreshToken,
-            process.env.REFRESH_TOKEN_SECRET,
-            async (err, decoded) => {
-                // expired or tampered
-                if (err || foundUserId !== decoded.id) {
-                    return res.status(403).json({ 'message': 'Forbidden'});
-                }
-                console.log(decoded)
-                // Refresh token was still valid
-                const accessToken = jwt.sign({
-                    id: decoded.id, 
-                    username: decoded.username,
-                }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
+        // verify refreshToken
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        console.log(decoded)
 
-                const newRefreshToken = jwt.sign({
-                    id: decoded.id, 
-                    username: decoded.username,
-                }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '10s' });
-                
-                // Saving refreshToken with current user
-                await sequelize.models.RefreshToken.create({
-                    userId: foundUserId,
-                    token: newRefreshToken
-                })
+        // tampered
+        if (foundUserId !== decoded.id) {
+            return res.status(403).json({ 'message': 'Forbidden'});
+        }
 
-                // Creates Secure Cookie with refresh token
-                res.cookie('jwt', newRefreshToken, { httpOnly: true, /* secure: true, */ sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+        // Refresh token was still valid
+        const accessToken = jwt.sign({
+            id: decoded.id, 
+            username: decoded.username,
+        }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
 
-                // Send access token to user
-                res.status(200).json({ token: accessToken });
-            }
-        );
+        const newRefreshToken = jwt.sign({
+            id: decoded.id, 
+            username: decoded.username,
+        }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1m' });
+
+        // Saving refreshToken with current user
+        await sequelize.models.RefreshToken.create({
+            userId: foundUserId,
+            token: newRefreshToken
+        })
+
+        // Creates Secure Cookie with refresh token
+        res.cookie('jwt', newRefreshToken, { httpOnly: true, /* secure: true, */ sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+
+        // Send access token to user
+        res.status(200).json({ token: accessToken });
+
     } catch (err) {
         res.status(400).json({ 'message': err.message });
     }
