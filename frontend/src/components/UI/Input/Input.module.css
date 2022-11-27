@@ -1,0 +1,24 @@
+.input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+  
+.input label {
+    font-weight: bold;
+    margin-left: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.input input {
+    border-radius: 1rem;
+    border: 1px solid #ccc;
+    font: inherit;
+    padding-left: 0.5rem;
+}
+
+.error-message {
+    height: 1rem;
+    color: #e70606;
+}

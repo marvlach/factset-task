@@ -1,0 +1,11 @@
+.card-container {
+    width: 69rem;
+    margin: 1rem auto;
+    margin-top: 5rem;
+    text-align: center;
+}
+
+.card-container h1 {
+    font-size: x-large;
+    font-style: italic;
+}

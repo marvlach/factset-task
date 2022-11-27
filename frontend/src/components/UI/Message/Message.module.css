@@ -1,0 +1,17 @@
+.message-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.error-message {
+    color: rgb(216, 22, 22);
+}
+
+.success-message {
+    color: rgb(36, 214, 20);
+}
+
+.little-X {
+    width: 5px; 
+    height: 5px;
+}

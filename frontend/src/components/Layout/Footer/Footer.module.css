@@ -1,0 +1,12 @@
+.footer-container {
+    width: 100%;
+    height: 5rem;    
+    text-align: center;
+    margin-top: auto;
+    background: #741188;
+}
+
+.card-container h1 {
+    font-size: x-large;
+    font-style: italic;
+}
