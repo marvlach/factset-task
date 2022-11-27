@@ -1,4 +1,4 @@
-import { useReducer, useRef, } from 'react';
+import { useEffect, useReducer, useRef, useState, } from 'react';
 import Card from '../../components/UI/Card/Card';
 import Input from '../../components/UI/Input/Input';
 import styles from './Signup.module.css';
@@ -12,6 +12,9 @@ import {
     notEmpty, 
 } from '../../utils/formFieldValidators.js';
 import Button from '../../components/UI/Button/Button';
+import { useSignupMutation } from '../../api/userApiSlice';
+import { useNavigate } from 'react-router-dom';
+import Message from '../../components/UI/Message/Message';
 
 const initialState = {
     username: {
@@ -172,10 +175,44 @@ const Signup = () => {
     const adminCodeRef = useRef();
     
     const [form, dispatchForm] = useReducer(formReducer, initialState);
-    
-    const handleSubmit = (event) => {
+    const [signup, { isLoading, error }] = useSignupMutation();
+    const [success, setSuccess] = useState(null);
+    const navigate = useNavigate();
+
+    // wait 1sec to see message and redirect to /login
+    useEffect(() => {
+
+        if (!success) {
+            return
+        }
+        const timer = setTimeout(() => {
+            navigate("/login");
+        }, 1000);
+
+        return () => {
+            clearTimeout(timer)
+        }
+    }, [navigate, success])
+
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         console.log(form);
+        const reqBody = {
+            username: form.username.value,
+            password: form.password.value,
+            isAdmin: form.isAdmin.value,
+            adminCode: form.adminCode.value
+        };
+
+        try {
+            const response = await signup(reqBody).unwrap();
+            setSuccess(response.message)
+        } catch (error) {
+            console.log('error', error)
+        }
+        
+        
     }
 
 
@@ -196,8 +233,10 @@ const Signup = () => {
 
     return (
     <>
+        {success && <Message type='success' message={success}/>}
+        {error && <Message type='error' message={error.data.message || error.error}/>}
         <Card className={styles['signup-card']}>
-            <h1> Very cool Signup </h1>    
+            <h1> Signup </h1>    
             <form onSubmit={handleSubmit}>
                 <Input 
                     input = {{

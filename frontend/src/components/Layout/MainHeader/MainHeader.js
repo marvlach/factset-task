@@ -1,11 +1,10 @@
-import { useContext } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import UserContext from '../../../store/userStore.js';
-
+import { NavLink } from 'react-router-dom';
+import { useSelector} from 'react-redux';
 import styles from './MainHeader.module.css';
+import Button from '../../UI/Button/Button';
 
 const MainHeader = (props) => {
-    const ctx = useContext(UserContext);
+    const user = useSelector(store => store.user);
 
     const activeStyle = {
         textDecoration: "underline",
@@ -26,8 +25,6 @@ const MainHeader = (props) => {
         },
     ]; 
 
-
-
     const loggedInMenuItems = [
         {
             key: '/',
@@ -35,11 +32,15 @@ const MainHeader = (props) => {
         },
         {
             key: '/user',
-            label: ctx.user.username,
+            label: user.user.username,
+        },
+        {
+            key: '/logout',
+            label: <Button> Logout </Button>,
         },
     ]; 
 
-    const navItems = ctx.user.isLoggedIn ? 
+    const navItems = user?.isAuth ? 
         loggedInMenuItems.map(item => {
             return <li key={item.key}>{item.label}</li>
             
@@ -48,7 +49,7 @@ const MainHeader = (props) => {
             return <li key={item.key}>{item.label}</li>
             
         })
-
+        console.log(user)
     return (
         <header className={styles['main-header']}>
             <h1>Currency Calculator</h1>

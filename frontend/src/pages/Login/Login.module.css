@@ -1,7 +1,15 @@
 .login-card {
-    width: 50rem;
-    display: flex;
-    margin: 1rem auto;
+    width: 40rem;
+    margin: 1rem auto;    
     margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
+
+.form-field {
+    width: 20rem;
+    height: 2rem;
+}
+

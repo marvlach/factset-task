@@ -11,7 +11,7 @@ router.post('/login', loginUser);
 
 router.post('/logout', logoutUser);
 
-router.post('/refresh', refreshToken);
+router.get('/refresh', refreshToken);
 
 router.post('/signup', signupUser);
 

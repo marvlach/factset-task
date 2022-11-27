@@ -73,7 +73,7 @@ export const loginUser = async (req, res, next) => {
             include: sequelize.models.RefreshToken
         });
 
-        console.log(foundUser.username, foundUser.password, foundUser.RefreshTokens)
+        //console.log(foundUser.username, foundUser.password, foundUser.RefreshTokens)
         if (!foundUser){
             throw new Error('Wrong credentials.');
         }
@@ -116,7 +116,7 @@ export const loginUser = async (req, res, next) => {
                 })
             }
             // clear previous RT cookie
-            res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', /* secure: true */ });
+            res.clearCookie('jwt', { httpOnly: true, /*sameSite: 'None',  secure: true */ });
         }
         
         // Saving refreshToken with current user
@@ -126,7 +126,7 @@ export const loginUser = async (req, res, next) => {
         })
 
         // Creates Secure Cookie with RT
-        res.cookie('jwt', newRefreshToken, { httpOnly: true, /* secure: true, */ sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie('jwt', newRefreshToken, { httpOnly: true, /* secure: true,  sameSite: 'None',*/ maxAge: 24 * 60 * 60 * 1000 });
 
         // Send access token to user
         res.status(200).json({ token: accessToken });
@@ -156,7 +156,7 @@ export const logoutUser = async (req, res) => {
         
         // if token not found, clear it from client
         if (!foundRefreshToken) {
-            res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', /* secure: true */ });
+            res.clearCookie('jwt', { httpOnly: true, /*sameSite: 'None',  secure: true */ });
             return res.status(204).json({message: 'No content'}); 
         }
 
@@ -167,7 +167,7 @@ export const logoutUser = async (req, res) => {
             }
         })
 
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', /* secure: true */ });
+        res.clearCookie('jwt', { httpOnly: true, /*sameSite: 'None',  secure: true */ });
         return res.status(204).json({message: 'No content'}); 
 
     } catch (err) {
@@ -189,7 +189,7 @@ export const refreshToken = async (req, res) => {
         const refreshToken = cookies.jwt;
 
         // clear the previous RT from user browser
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', /* secure: true */ });
+        res.clearCookie('jwt', { httpOnly: true, /*sameSite: 'None',  secure: true */ });
 
         // is refresh Token in DB?
         const foundRefreshToken = await sequelize.models.RefreshToken.findOne({
@@ -249,7 +249,7 @@ export const refreshToken = async (req, res) => {
         })
 
         // Creates Secure Cookie with refresh token
-        res.cookie('jwt', newRefreshToken, { httpOnly: true, /* secure: true, */ sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie('jwt', newRefreshToken, { httpOnly: true, /* secure: true, sameSite: 'None',*/  maxAge: 24 * 60 * 60 * 1000 });
 
         // Send access token to user
         res.status(200).json({ token: accessToken });
