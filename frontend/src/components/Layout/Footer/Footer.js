@@ -5,7 +5,7 @@ const Footer = () => {
     return (
     <>
         <footer className={styles['footer-container']}>
-            <h1>Footer</h1>
+            <p>marios.vlachog@gmail.com</p>
         </footer>
     </>)
 }

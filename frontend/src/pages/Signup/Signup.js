@@ -229,7 +229,7 @@ const Signup = () => {
         return prev && form[key].isValid
     }, true);
 
-    console.log('formIsValid', form, formIsValid);
+    // console.log('formIsValid', form, formIsValid);
 
     return (
     <>

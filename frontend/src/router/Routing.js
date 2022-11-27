@@ -5,12 +5,18 @@ import NotFound from '../pages/NotFound/NotFound.js'
 import Signup from '../pages/Signup/Signup.js'
 import Currency from '../pages/Currency/Currency.js'
 import ProtectedRoute from './ProtectedRoute.js'
+import InverseProtectedRoute from './InverseProtectedRoute.js'
+
 const Routing = () => {
     return (  
         <Routes>
             <Route path="/" element={<Homepage />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} /> 
+
+            <Route element={<InverseProtectedRoute />}>
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login />} /> 
+            </Route>
+            
             
             <Route element={<ProtectedRoute />}>
                 <Route path="/currency" element={<Currency />} />

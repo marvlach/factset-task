@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { userActions } from '../store/userSlice';
 import Spinner from '../components/UI/Spinner/Spinner.js';
 
-const ProtectedRoute = ({ children, }) => {
+const InverseProtectedRoute = ({ children, }) => {
     const user = useSelector(store => store.user)
     const location = useLocation();
     const [getUser, {isLoading: getUserIsLoading, isError: getUserError }] = useLazyGetUserQuery();
@@ -28,17 +28,21 @@ const ProtectedRoute = ({ children, }) => {
         
     }, [user.isAuth, dispatch, getUser])
 
-    if (user.isAuth) {
-      	return children ? children : <Outlet />;
+    // if user.isAuth redirect to dashboard
+    if (user.isAuth) { 
+      	return <Navigate to='/currency' replace={true} state={{from: location, unathorized: true}}/>;
     }
-    console.log(getUserError)
+    //console.log(getUserError)
+
+    if (getUserError) {
+        return children ? children : <Outlet />;
+    }
     return ( 
         <>
-            {getUserError && <Navigate to='/login' replace={true} state={{from: location, unathorized: true}}/>}
             {getUserIsLoading && <Spinner />}
         </>
     );
     
 };
 
-export default ProtectedRoute
+export default InverseProtectedRoute

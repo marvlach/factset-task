@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../../api/userApiSlice';
 import Button from '../../components/UI/Button/Button';
@@ -8,6 +8,7 @@ import styles from './Login.module.css';
 import {useDispatch} from 'react-redux';
 import { userActions } from '../../store/userSlice';
 import Message from '../../components/UI/Message/Message';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 const Login = () => {
     const usernameRef = useRef();
@@ -52,7 +53,7 @@ const Login = () => {
 
     return (
     <>
-        {loginIsLoading && <h1>{`Loading... ${loginIsLoading}`}</h1>}
+        {loginIsLoading && <Spinner />}
         {loginError && <Message type='error' message={loginError.data.message || loginError.error}/>}
         <Card className={styles['login-card']}>
             <h1> Login </h1>

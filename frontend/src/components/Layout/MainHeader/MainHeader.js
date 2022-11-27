@@ -49,7 +49,7 @@ const MainHeader = (props) => {
         },
         {
             key: '/user',
-            label: user?.user?.username,
+            label: <NavLink to='/currency' style={({ isActive }) => isActive ? activeStyle : undefined }> {user?.user?.username} </NavLink>
         },
         {
             key: '/logout',
