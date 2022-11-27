@@ -9,7 +9,6 @@ import  sequelize from './models/index.js'
 
 import { createDB } from './models/createDB.js'
 
-await createDB(sequelize);
 import userRoutes from './routes/user.routes.js';
 import rootRoutes from './routes/root.routes.js';   
 /* 
@@ -85,6 +84,7 @@ try {
       console.log(error);
     } 
 })(); */
+await createDB(sequelize);
 
 app.listen(PORT, (error) =>{
     if(!error)

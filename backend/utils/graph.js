@@ -1,81 +1,77 @@
-// create a graph class
-class Graph {
-    
-    constructor(noOfVertices) {
-        this.noOfVertices = noOfVertices;
-        this.AdjList = new Map();
-    }
- 
-    addVertex(v) {
-        this.AdjList.set(v, []);
-    }
+import Queue from "./queue.js";
 
-    addEdge(v, w) {
-        this.AdjList.get(v).push(w);
-        this.AdjList.get(w).push(v);
+class WeightedGraph {
+    adjacenyList;
+    constructor() {
+      this.adjacenyList = {};
+    }
+  
+    addVertex(vertex) {
+        if (!this.adjacenyList[vertex]) {
+            this.adjacenyList[vertex] = [];
+        }
+    }
+  
+    addEdge(vertex1, vertex2, weight) {
+        this.adjacenyList[vertex1].push({ node: vertex2, weight: weight });
+        this.adjacenyList[vertex2].push({ node: vertex1, weight: 1/weight });
     }
 
     // Prints the vertex and adjacency list
     printGraph() {
-        // get all the vertices
-        var get_keys = this.AdjList.keys();
-    
-        // iterate over the vertices
-        for (var i of get_keys) {
-            
-            var get_values = this.AdjList.get(i);
-            var conc = "";
-    
-            
-            for (var j of get_values)
-                conc += j + " ";
-    
-            console.log(i + " -> " + conc);
-        }
+        const sources = Object.keys(this.adjacenyList);
+        sources.forEach(key => {
+            this.adjacenyList[key].forEach(child => {
+                console.log(`${key} -- ${child.weight} --> ${child.node}`)
+            }) 
+        })
+        
     }
 
     // function to performs BFS
     bfs(startingNode) {
     
-        // create a visited object
-        var visited = {};
+        const visited = {};
     
-        // Create an object for queue
-        var q = new Queue();
+        const q = new Queue();
     
-        // add the starting node to the queue
-        visited[startingNode] = true;
-        q.enqueue(startingNode);
-    
-        // loop until queue is empty
-        while (!q.isEmpty()) {
-            // get the element from the queue
-            var getQueueElement = q.dequeue();
-    
-            // passing the current vertex to callback function
-            console.log(getQueueElement);
-    
-            // get the adjacent list for current vertex
-            var get_List = this.AdjList.get(getQueueElement);
-    
-            // loop through the list and add the element to the
-            // queue if it is not processed yet
-            for (var i in get_List) {
-                var neigh = get_List[i];
-    
-                if (!visited[neigh]) {
-                    visited[neigh] = true;
-                    q.enqueue(neigh);
-                }
-            }
+        visited[startingNode] = {
+            isVisited: true,
+            distanceFromStart: 1
         }
+        q.enqueue({
+            node: startingNode,
+            distanceFromStart: 1
+        });
+    
+        while (!q.isEmpty()) {
+
+            const getQueueElement = q.dequeue();
+        
+            const neighbours = this.adjacenyList[getQueueElement.node];
+    
+            neighbours.forEach(neighbour => {
+                const neighbourNode =  neighbour.node;
+                if (visited[neighbourNode]) {
+                    return 
+                }
+                // console.log(`${getQueueElement.distanceFromStart}, ${neighbour.weight} ${neighbour.weight * getQueueElement.distanceFromStart}`)
+                visited[neighbourNode] = {
+                    isVisited: true,
+                    distanceFromStart: neighbour.weight * getQueueElement.distanceFromStart
+                }
+                q.enqueue({
+                    node: neighbourNode,
+                    distanceFromStart: neighbour.weight * getQueueElement.distanceFromStart
+                });
+            })
+        }
+        return visited;
     }
 
     // Main DFS method
     dfs(startingNode) {
-    
-        var visited = {};
-    
+        const visited = { };
         this.DFSUtil(startingNode, visited);
     }
     
@@ -84,14 +80,17 @@ class Graph {
     DFSUtil(vert, visited) {
         visited[vert] = true;
         console.log(vert);
-    
-        var get_neighbours = this.AdjList.get(vert);
-    
-        for (var i in get_neighbours) {
-            var get_elem = get_neighbours[i];
-            if (!visited[get_elem])
-                this.DFSUtil(get_elem, visited);
-        }
+        console.log(this.adjacenyList[vert])
+        console.log(visited)
+        this.adjacenyList[vert].forEach(neighbour => {
+            const neighbourNode =  neighbour.node;
+            console.log(`is ${neighbourNode} visited: ${visited[neighbourNode]}`)
+            if (!visited[neighbourNode]) {
+                this.DFSUtil(neighbourNode, visited);
+            }
+        })
     }
-
 }
+  
+
+export default WeightedGraph

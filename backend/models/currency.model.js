@@ -11,14 +11,6 @@ const CurrencyCreator = (sequelize, DataTypes) => {
             notEmpty: true,
         },
     }, {
-        /* hooks: {
-            beforeValidate: (user, options) => {
-            user.mood = 'happy';
-            },
-            afterValidate: (user, options) => {
-            user.username = 'Toni';
-            }
-        }, */
         sequelize, 
         modelName: 'Currency' 
     })
