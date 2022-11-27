@@ -1,14 +1,31 @@
-import { NavLink } from 'react-router-dom';
-import { useSelector} from 'react-redux';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector} from 'react-redux';
 import styles from './MainHeader.module.css';
 import Button from '../../UI/Button/Button';
+import { useLogoutMutation } from '../../../api/userApiSlice';
+import { userActions } from '../../../store/userSlice';
 
 const MainHeader = (props) => {
     const user = useSelector(store => store.user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const activeStyle = {
         textDecoration: "underline",
     };
+    const [logout, { isLoading, error }] = useLogoutMutation();
+
+    const handleLogout = async () => {
+        console.log('hello')
+        try {
+            await logout();
+            dispatch(userActions.logout());
+            navigate("/login");        
+        } catch (error) {
+            console.log('error', error)
+        }
+        
+    }
 
     const notLoggedInMenuItems = [
         {
@@ -32,24 +49,18 @@ const MainHeader = (props) => {
         },
         {
             key: '/user',
-            label: user.user.username,
+            label: user?.user?.username,
         },
         {
             key: '/logout',
-            label: <Button> Logout </Button>,
+            label: <button onClick={handleLogout}> Logout </button>,
         },
     ]; 
 
     const navItems = user?.isAuth ? 
-        loggedInMenuItems.map(item => {
-            return <li key={item.key}>{item.label}</li>
-            
-        }) : 
-        notLoggedInMenuItems.map(item => {
-            return <li key={item.key}>{item.label}</li>
-            
-        })
-        console.log(user)
+    loggedInMenuItems.map(item => <li key={item.key}>{item.label}</li>) : 
+    notLoggedInMenuItems.map(item => <li key={item.key}>{item.label}</li>)
+
     return (
         <header className={styles['main-header']}>
             <h1>Currency Calculator</h1>

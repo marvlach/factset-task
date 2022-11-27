@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useGetUserQuery, useLoginMutation } from '../../api/userApiSlice';
+import { useLoginMutation } from '../../api/userApiSlice';
 import Button from '../../components/UI/Button/Button';
 import Card from '../../components/UI/Card/Card';
 import Input from '../../components/UI/Input/Input';
@@ -21,17 +21,6 @@ const Login = () => {
     const location = useLocation();
 
     const [login, { isLoading: loginIsLoading, error: loginError }] = useLoginMutation();
-    const { data: user, isLoading: getUserIsLoading, error: getUserError } = useGetUserQuery();
-
-
-    useEffect(() => {
-        if (user) {
-            dispatch(userActions.setUser({
-                ...user
-            }))
-            navigate(location.state?.from?.pathname ?? "/currency");   
-        }
-    }, [user, dispatch, navigate, location.state?.from?.pathname, loginIsLoading])
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -47,7 +36,7 @@ const Login = () => {
             dispatch(userActions.login({
                 token: response.token,
             }))
-            navigate(location.state?.from?.pathname ?? "/currency");   
+            navigate(/* location.state?.from?.pathname ?? */ "/currency");   
         } catch (error) {
             console.log('error', error)
         }
@@ -60,13 +49,12 @@ const Login = () => {
     const formIsValid = Object.keys(form).reduce((prev, formField) => {
         return prev && form[formField].trim() !== ''
     }, true)
-    console.log(formIsValid)
 
     return (
     <>
-        {(getUserIsLoading || loginIsLoading) && <h1>{`Loading...${getUserIsLoading} ${loginIsLoading}`}</h1>}
+        {loginIsLoading && <h1>{`Loading... ${loginIsLoading}`}</h1>}
         {loginError && <Message type='error' message={loginError.data.message || loginError.error}/>}
-        {getUserError && <Card className={styles['login-card']}>
+        <Card className={styles['login-card']}>
             <h1> Login </h1>
             <form onSubmit={handleSubmit}>
                 <Input 
@@ -105,7 +93,7 @@ const Login = () => {
                     Login 
                 </Button>
             </form>
-        </Card>}
+        </Card>
     
     </>)
 }
