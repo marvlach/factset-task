@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../../api/userApiSlice';
 import Button from '../../components/UI/Button/Button';
 import Card from '../../components/UI/Card/Card';
@@ -19,7 +19,6 @@ const Login = () => {
     })
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const location = useLocation();
 
     const [login, { isLoading: loginIsLoading, error: loginError }] = useLoginMutation();
 

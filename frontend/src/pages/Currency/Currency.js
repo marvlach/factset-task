@@ -2,7 +2,7 @@ import AdminPanel from "./components/AdminPanel/AdminPanel"
 import ExchangeRateDisplay from "./components/ExchangeRateDisplay/ExchangeRateDisplay"
 import ExchangeRateSelector from "./components/ExchangeRateSelector/ExchangeRateSelector"
 import { useSelector } from 'react-redux';
-import { useAddCurrencyMutation, useGetCurrenciesQuery, useLazyGetExchangeQuery } from "../../api/currencyApiSlice";
+import { useAddCurrencyMutation, useAddExchangeMutation, useGetCurrenciesQuery, useLazyGetExchangeQuery } from "../../api/currencyApiSlice";
 import { useState } from "react";
 import AddCurrencyModal from "./components/AddCurrencyModal/AddCurrencyModal";
 import AddExchangeModal from "./components/AddExchangeModal/AddExchangeModal";
@@ -17,7 +17,8 @@ const Currency = () => {
 
     const { data: currencyData, error: currencyError, isLoading: currencyIsLoading } = useGetCurrenciesQuery();
     const [getExchange, { error: exchangeError, isLoading: exchangeIsLoading }] = useLazyGetExchangeQuery();
-    const [addCurrency, { isLoading: addCurrencyIsLoading, error: addCurrencyError }] = useAddCurrencyMutation()
+    const [addCurrency, { isLoading: addCurrencyIsLoading, error: addCurrencyError }] = useAddCurrencyMutation();
+    const [addExchange, { isLoading: addExchangeIsLoading, error: addExchangeError }] = useAddExchangeMutation();
 
     const openCurrencyModal = () => { setcurrencyModalOpen(true); }
     
@@ -27,7 +28,7 @@ const Currency = () => {
 
     const closeExchangeModal = () => { setExchangeModalOpen(false); }
 
-    const handleSearchSubmit = async () => {
+    const handleExchangeSearchSubmit = async () => {
         try {
             const response = await getExchange({fromId: fromInput, toId: toInput, latest: true});
             setExchange(response.data);
@@ -38,9 +39,18 @@ const Currency = () => {
 
     const handleSubmitNewCurrency = async (currency) => {
         try {
-            console.log('Submitting', currency)
-            const response = await addCurrency({name: currency}).unwrap();
-            console.log(response)
+            await addCurrency({name: currency}).unwrap();
+        } catch (error) {
+            console.log('error', error)
+        } finally {
+            closeCurrencyModal();
+        }
+    }
+
+    const handleSubmitNewExchange = async ({from, to, newRate}) => {
+        try {
+            ///await addCurrency({name: currency}).unwrap();
+            console.log(from, to, newRate);
         } catch (error) {
             console.log('error', error)
         } finally {
@@ -60,7 +70,7 @@ const Currency = () => {
                 setFromInput={setFromInput}
                 toInput={toInput}
                 setToInput={setToInput}
-                handleSubmit={handleSearchSubmit}
+                handleSubmit={handleExchangeSearchSubmit}
             />
             <ExchangeRateDisplay 
                 exchange={exchangeDisplay}
@@ -70,7 +80,12 @@ const Currency = () => {
                 closeCurrencyModal={closeCurrencyModal}
                 handleSubmitNewCurrency={handleSubmitNewCurrency}
             />}
-            {exchangeModalOpen && <AddExchangeModal closeExchangeModal={closeExchangeModal}/>}
+            {exchangeModalOpen && 
+            <AddExchangeModal 
+                currencyOptions={currencyOptions}
+                closeExchangeModal={closeExchangeModal}
+                handleSubmitNewExchange={handleSubmitNewExchange}
+            />}
         </>
     )
 }

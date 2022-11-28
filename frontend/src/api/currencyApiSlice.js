@@ -18,7 +18,8 @@ export const currencyApiSlice = apiSlice.injectEndpoints({
                     to: toId,
                     latest: latest
                 }
-            })
+            }),
+            providesTags: ['Exchange'],
         }),
         addCurrency: builder.mutation({
             query: body => ({
@@ -27,7 +28,16 @@ export const currencyApiSlice = apiSlice.injectEndpoints({
                 body: { ...body }
             }),
             invalidatesTags: ['Currency'],
-        }),/*
+        }),
+        addExchange: builder.mutation({
+            query: body => ({
+                url: '/exchange',
+                method: 'POST',
+                body: { ...body }
+            }),
+            invalidatesTags: ['Exchange'],
+        })
+        /*
         getUser: builder.query({
             query: () => ({
                 url: '/user',
@@ -48,5 +58,6 @@ export const {
     useLazyGetCurrenciesQuery, 
     useGetExchangeQuery, 
     useLazyGetExchangeQuery,
-    useAddCurrencyMutation
+    useAddCurrencyMutation,
+    useAddExchangeMutation
 } = currencyApiSlice

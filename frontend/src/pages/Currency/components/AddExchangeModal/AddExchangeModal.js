@@ -4,20 +4,39 @@ import { useRef, useState } from 'react'
 import styles from './AddExchangeModal.module.css';
 import Button from '../../../../components/UI/Button/Button.js';
 
-const AddExchangeModal = ({ closeExchangeModal }) => {
-    /* const currencyInputRef = useRef();
-    const [currencyInput, setCurrencyInput] = useState('');
+const AddExchangeModal = ({ currencyOptions, closeExchangeModal, handleSubmitNewExchange }) => {
+    const [fromInput, setFromInput] = useState('0');
+    const [toInput, setToInput] = useState('0');
+    const [exchange, setExchange] = useState('');  
 
-    const handleFieldChange = (e) => {
-        setCurrencyInput(e.target.value);
-    } */
+    const handleFieldChange = (event) => {
+        if (event.target.getAttribute('id') === 'from') {
+            setFromInput(event.target.value);
+            return
+        } 
+        
+        if (event.target.getAttribute('id') === 'to') {
+            setToInput(event.target.value);
+            return
+        } 
+
+        if (event.target.getAttribute('id') === 'exchangeValue') {
+            setExchange(event.target.value);
+            return
+        } 
+    }
+
+    const handleNewExchangeSubmit = (event) => {
+        event.preventDefault();
+        handleSubmitNewExchange({ from: fromInput, to: toInput , newRate: exchange });
+    }
+
+    const optionsArray = currencyOptions?.map(cur => <option key={cur.id} value={cur.id}>{cur.name}</option>);
+    const submitDisabled = fromInput === '0' ||  toInput === '0' || exchange.trim() === '';
     
-    // const formIsValid = currencyInput.trim() !== '';
-
     return(
         <Modal closeModal={closeExchangeModal}>
-            {/* <div className={styles['modal-card']}>
-            <form onSubmit={handleSearchExchange}>
+            <form onSubmit={handleNewExchangeSubmit}>
                 <div className={styles['selector-container']}>
                     <label htmlFor={'from'}> From </label> 
                     <select name="from" id="from" onChange={handleFieldChange} value={fromInput}>
@@ -29,18 +48,30 @@ const AddExchangeModal = ({ closeExchangeModal }) => {
                         {optionsArray}
                     </select>
                 </div>
-                <Button 
-                    button={{
-                        type: 'submit',
-                        disabled: submitDisabled
+                <Input 
+                    input = {{
+                        className: styles['form-field'],
+                        type: 'number',
+                        id: 'exchangeValue',
+                        value: exchange,
+                        onChange: handleFieldChange
                     }}
-                > 
-                    Display Exchange Rate
-                </Button>
+                    label={'New Exchange Value'}
+                    id={'exchangeValue'}
+                    
+                />
+                <div className={styles['modal-button-container2']}>
+                    <div className={styles['modal-button-container']}>
+                        <Button button={{type: 'button' , onClick: closeExchangeModal}} > 
+                            Cancel 
+                        </Button>
+                        <Button button={{type: 'submit', disabled: submitDisabled}} > 
+                            Add Exchange 
+                        </Button>
+                    </div>
+                </div>
 
             </form>
-            </div> */}
-            hello
         </Modal>
     )
 }
