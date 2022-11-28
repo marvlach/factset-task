@@ -2,14 +2,18 @@ import { Model } from 'sequelize';
 
 const ExchangeRateCreator = (sequelize, DataTypes) => {
     class ExchangeRate extends Model {
-        static associate({ Currency }) {
-            this.belongsTo(Currency, {as: 'from'});
-            this.belongsTo(Currency, {as: 'to'});
+        static associate({ Currency, ExchangeRateTimeline }) {
+            this.belongsTo(Currency, {as: 'from', foreignKey: 'fromId'});
+            this.belongsTo(Currency, {as: 'to', foreignKey: 'toId'});
+            this.hasMany(ExchangeRateTimeline, {
+                foreignKey: 'exchangeRateId',
+                onDelete: 'CASCADE',
+            })
         }
     }
 
     ExchangeRate.init({
-        rate: {
+        comboKey: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,

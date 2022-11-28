@@ -51,11 +51,16 @@ export const createDB = async (sequelize) => {
             console.log("finished");
             console.log(uniqueCurrencies);
             console.log(exchanges);
-            await sequelize.models.Currency.bulkCreate(uniqueCurrencies.map(item => {
+            const currencies = await sequelize.models.Currency.bulkCreate(uniqueCurrencies.map(item => {
                 return {
                     name: item
                 }
-            }));
+            }), {returning: true});
+
+            const mapCurrencyToId = {}
+            currencies.forEach(item => {
+                mapCurrencyToId[item.name] = item.id
+            });
 
             const graph = new WeightedGraph(uniqueCurrencies.length);
 
@@ -68,20 +73,79 @@ export const createDB = async (sequelize) => {
             });
 
             graph.printGraph();
-
+            
             // graph.dfs(uniqueCurrencies[0])
             // console.log('distance', graph.bfs(uniqueCurrencies[0]))
             uniqueCurrencies.forEach(sourceCurrency => {
                 const sourceCurrencyExchanges = graph.bfs(sourceCurrency);
                 extendedExchanges[sourceCurrency] = {}
                 
-                for (const property in sourceCurrencyExchanges) {
-                    extendedExchanges[sourceCurrency][property] = sourceCurrencyExchanges[property].distanceFromStart;
+                for (const tergetCurrency in sourceCurrencyExchanges) {
+                    extendedExchanges[sourceCurrency][tergetCurrency] = sourceCurrencyExchanges[tergetCurrency].distanceFromStart;
                 }
                 // console.log(`${sourceCurrency}`, sourceCurrencyExchanges)
             });
 
-            console.log(extendedExchanges)
+            console.log(extendedExchanges);
+            
+
+            const exchangeRatesToBeAdded = {}
+            for (const source in extendedExchanges) {
+                for (const target in extendedExchanges[source]) {
+                    let sourceSort = source;
+                    let targetSort = target;
+                    let rate = extendedExchanges[source][target];
+                    if (source > target) {
+                        sourceSort = target
+                        targetSort = source
+                        rate = 1/rate
+                    }
+                    const comboKey = `${sourceSort} ${targetSort}`
+                    if (!exchangeRatesToBeAdded[comboKey]) {
+                        exchangeRatesToBeAdded[comboKey] = {
+                            from: sourceSort,
+                            to: targetSort,
+                            rate: rate,
+                        }
+                    }
+                    
+                }
+            }
+            
+            console.log(exchangeRatesToBeAdded)
+
+            const bulkCreateExchangeRates = [];
+            for (const comboKey in exchangeRatesToBeAdded) {
+                bulkCreateExchangeRates.push({
+                    comboKey: comboKey,
+                    fromId: mapCurrencyToId[exchangeRatesToBeAdded[comboKey].from],
+                    toId: mapCurrencyToId[exchangeRatesToBeAdded[comboKey].to],
+                })
+            }
+
+            console.log(bulkCreateExchangeRates)
+
+            const exchangesCreated = await sequelize.models.ExchangeRate.bulkCreate(bulkCreateExchangeRates, {returning: true});
+            console.log(exchangesCreated);
+
+            const mapExchangeToId = {}
+            exchangesCreated.forEach(item => {
+                mapExchangeToId[item.comboKey] = item.id
+            });
+
+            console.log(mapExchangeToId)
+
+            const bulkCreateExchangeRateTimelines = [];
+            for (const comboKey in exchangeRatesToBeAdded) {
+                bulkCreateExchangeRateTimelines.push({
+                    exchangeRateId: mapExchangeToId[comboKey],
+                    rate: exchangeRatesToBeAdded[comboKey].rate
+                })
+            }
+
+            const timelinesCreated = await sequelize.models.ExchangeRateTimeline.bulkCreate(bulkCreateExchangeRateTimelines, {returning: true});
+            console.log(timelinesCreated)
+
         });
 
         
