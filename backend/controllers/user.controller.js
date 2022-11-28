@@ -36,13 +36,13 @@ export const getUser = async (req, res, next) => {
 export const signupUser = async (req, res, next) => {
     try {
         
-        const { username, password, isAdmin, secretAdminCode } = req.body;
+        const { username, password, isAdmin, adminCode } = req.body;
 
         if (!username || !password) {
             throw new Error('Username and password are required.') 
         }
 
-        if (isAdmin && (!secretAdminCode || secretAdminCode !== process.env.SUPER_SECRET_ADMIN_CODE)) {
+        if (isAdmin && (!adminCode || adminCode !== process.env.SUPER_SECRET_ADMIN_CODE)) {
             throw new Error('You need a super secret admin code to sign up as an admin.') 
         }
 

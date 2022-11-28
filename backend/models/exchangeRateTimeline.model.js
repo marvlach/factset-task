@@ -11,7 +11,7 @@ const ExchangeRateTimelineCreator = (sequelize, DataTypes) => {
 
     ExchangeRateTimeline.init({
         rate: {
-            type: DataTypes.STRING,
+            type: DataTypes.DOUBLE,
             allowNull: true,
             notEmpty: true,
         },

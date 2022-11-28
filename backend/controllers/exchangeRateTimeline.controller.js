@@ -1,6 +1,6 @@
 
 import sequelize from "../models/index.js";
-import { Op } from 'sequelize';
+import { Op, fn, col } from 'sequelize';
 
 
 // GET exchange/
@@ -25,10 +25,41 @@ export const getExchanges = async (req, res, next) => {
                         {[Op.and]: [{fromId: to}, {toId: from,}]}
                     ]
                 }
-            },            
+            }, 
+            order: [
+                ['updatedAt', 'DESC'],
+            ],
+            limit: latest ? 1 : null
         })
 
-        res.status(200).json( exchanges );
+        // may need to reverse        
+        const toReturn = exchanges?.map(item => {
+            if (item.ExchangeRate.from.id == to) {
+                return {
+                    id: item.id,
+                    rate: 1/item.rate,
+                    updatedAt: item.updatedAt,
+                    fromId: item.ExchangeRate.to.id,
+                    from: item.ExchangeRate.to.name,
+                    toId: item.ExchangeRate.from.id,
+                    to: item.ExchangeRate.from.name,
+                    comboKey: item.ExchangeRate.comboKey,
+                }
+            }
+            return {
+                id: item.id,
+                rate: item.rate,
+                updatedAt: item.updatedAt,
+                fromId: item.ExchangeRate.from.id,
+                from: item.ExchangeRate.from.name,
+                toId: item.ExchangeRate.to.id,
+                to: item.ExchangeRate.to.name,
+                comboKey: item.ExchangeRate.comboKey,
+            }
+        })
+        
+
+        res.status(200).json( toReturn );
 
 
     } catch (err) {
