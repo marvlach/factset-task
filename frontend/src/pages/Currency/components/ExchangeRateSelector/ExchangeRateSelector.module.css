@@ -8,3 +8,21 @@
     align-items: center;
 }
 
+select {
+    border-radius: 1rem;
+    border: 1px solid #ccc;
+    font: inherit;
+}
+
+.selector-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.selector-container label{
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+

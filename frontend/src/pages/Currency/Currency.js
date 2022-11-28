@@ -4,15 +4,30 @@ import ExchangeRateSelector from "./components/ExchangeRateSelector/ExchangeRate
 import { useSelector } from 'react-redux';
 import { useGetCurrenciesQuery, useLazyGetExchangeQuery } from "../../api/currencyApiSlice";
 import { useState } from "react";
+import AddCurrencyModal from "./components/AddCurrencyModal/AddCurrencyModal";
+import AddExchangeModal from "./components/AddExchangeModal/AddExchangeModal";
 const Currency = () => {
 
     const user = useSelector(store => store.user.user);
     const [fromInput, setFromInput] = useState('0');
     const [toInput, setToInput] = useState('0');
     const [exchange, setExchange] = useState({});
+    const [currencyModalOpen, setcurrencyModalOpen] = useState(false);
+    const [exchangeModalOpen, setExchangeModalOpen] = useState(false);
+
     const { data: currencyData, error: currencyError, isLoading: currencyIsLoading } = useGetCurrenciesQuery();
     const [getExchange, { error: exchangeError, isLoading: exchangeIsLoading }] = useLazyGetExchangeQuery();
     
+
+    const openCurrencyModal = () => { setcurrencyModalOpen(true); }
+    
+    const closeCurrencyModal = () => { setcurrencyModalOpen(false); }
+
+    const openExchangeModal = () => { setExchangeModalOpen(true); }
+
+    const closeExchangeModal = () => { setExchangeModalOpen(false); }
+
+
     const handleSearchSubmit = async () => {
         try {
             const response = await getExchange({fromId: fromInput, toId: toInput, latest: true});
@@ -25,10 +40,11 @@ const Currency = () => {
 
     const currencyOptions =  !currencyError && !currencyIsLoading ? [{id:0, name: '-'}, ...currencyData] : [];
     const exchangeDisplay = !exchangeError && !exchangeIsLoading ? exchange : {};
-    console.log(fromInput, toInput)
+
+    
     return (
         <>
-            {user.isAdmin && <AdminPanel />}
+            {user.isAdmin && <AdminPanel openCurrencyModal={openCurrencyModal} openExchangeModal={openExchangeModal}/>}
             <ExchangeRateSelector 
                 currency={currencyOptions} 
                 fromInput={fromInput} 
@@ -40,6 +56,8 @@ const Currency = () => {
             <ExchangeRateDisplay 
                 exchange={exchangeDisplay}
             />
+            {currencyModalOpen && <AddCurrencyModal closeCurrencyModal={closeCurrencyModal}/>}
+            {exchangeModalOpen && <AddExchangeModal closeExchangeModal={closeExchangeModal}/>}
         </>
     )
 }
