@@ -109,7 +109,7 @@ export const createCurrency = async (req, res, next) => {
 export const updateCurrencyById = async (req, res, next) => {
     try {
         const newName = req.body.name?.trim();
-        if (!name || name === '' ) {
+        if (!newName || newName === '' ) {
             throw new Error('Please provide a name for the currency.');
         }
         const updatedCurrency = await sequelize.models.Currency.update({ name: newName }, {
