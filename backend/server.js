@@ -4,20 +4,22 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser'
 import credentials from './middlewares/credentials.js';
 import corsOptions from './config/corsOptions.js';
+dotenv.config();
 
+const DB_NAME = process.env.DB_NAME 
+const DB_USERNAME = process.env.DB_USERNAME 
+const DB_PASSWORD = process.env.DB_PASSWORD 
+const DB_HOST = process.env.DB_HOST 
+
+console.log('server.js NOTHINGGGGGGGGGGGGG', DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST)
 import  sequelize from './models/index.js'
-
 import { createDB } from './models/createDB.js'
 
 import userRoutes from './routes/user.routes.js';
 import rootRoutes from './routes/root.routes.js';   
 import currencyRoutes from './routes/currency.routes.js';
 import exchangeRoutes from './routes/exchange.routes.js';
-/* 
-import personRoutes from './routes/person.routes.js';
-import { errorHandler } from './middlewares/errorHandler.js';
- */
-dotenv.config();
+
 
 const PORT = process.env.PORT || 8000;
 
@@ -27,7 +29,6 @@ const app = express();
 
 
 // custom middleware logger
-// app.use(logger);
 
 // Handle options credentials check - before CORS!
 // and fetch cookies credentials requirement
@@ -64,30 +65,14 @@ app.all('*', (req, res) => {
 // app.use(errorHandler); 
 
 
-try {
-    await sequelize.authenticate();
+try {    
     await sequelize.sync({ force: true })
-
-
+    await sequelize.authenticate();
     console.log('Connection has been established successfully.');
 } catch (error) {
     console.error('Unable to connect to the database:', error);
 }
-/* (async function test() {
-    try {
-        
-      await sequelize.sync({ force: true });
-      // seed
-      const author = await sequelize.models.User.create({
-        username: "marios",
-        password: "12345!!asdF",
-      });
-     
-      console.log(await sequelize.models.User.findAll())
-    } catch (error) {
-      console.log(error);
-    } 
-})(); */
+
 await createDB(sequelize);
 
 app.listen(PORT, (error) =>{

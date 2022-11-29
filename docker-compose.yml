@@ -1,0 +1,43 @@
+# Version of Docker-compose
+version: '2.12'
+
+services:
+  # react app
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.front
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+
+  # node server
+  backend:
+    restart: always
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.back
+    environment:
+      - DB_DOCKER_HOST=mysql
+    ports:
+      - 8000:8000
+    depends_on:
+      mysql:
+        condition: service_healthy
+  
+  # mysql
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: FSDB
+      MYSQL_ROOT_PASSWORD: '123'
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - MYSQLDB:/var/lib/mysql
+  
+volumes:
+  MYSQLDB:

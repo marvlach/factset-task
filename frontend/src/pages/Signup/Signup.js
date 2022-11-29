@@ -234,7 +234,7 @@ const Signup = () => {
     return (
     <>
         {success && <Message type='success' message={success}/>}
-        {error && <Message type='error' message={error.data.message || error.error}/>}
+        {error && <Message type='error' message={error?.data?.message || error?.error}/>}
         <Card className={styles['signup-card']}>
             <h1> Signup </h1>    
             <form onSubmit={handleSubmit}>

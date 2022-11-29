@@ -53,7 +53,7 @@ const Login = () => {
     return (
     <>
         {loginIsLoading && <Spinner />}
-        {loginError && <Message type='error' message={loginError.data.message || loginError.error}/>}
+        {loginError && <Message type='error' message={loginError?.data?.message || loginError?.error}/>}
         <Card className={styles['login-card']}>
             <h1> Login </h1>
             <form onSubmit={handleSubmit}>
