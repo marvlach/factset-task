@@ -1,18 +1,18 @@
 import express from "express";
 import { createCurrency, deleteCurrencyById, getCurrencies, getCurrencyById, updateCurrencyById } from '../controllers/currency.controller.js';
-import { verifyAccessToken } from '../middlewares/verifyAccessToken.js';
+import { verifyAccessToken, verifyAdminAccessToken } from '../middlewares/verifyAccessToken.js';
 
 const router = express.Router();
 
 // all routes here start with /currency
-router.get('/',  getCurrencies);
+router.get('/', verifyAccessToken, getCurrencies);
 
-router.get('/:id',  getCurrencyById);
+router.get('/:id', verifyAccessToken, getCurrencyById);
 
-router.post('/', createCurrency);
+router.post('/', verifyAdminAccessToken, createCurrency);
 
-router.delete('/:id', deleteCurrencyById);
+router.delete('/:id', verifyAdminAccessToken, deleteCurrencyById);
 
-router.patch('/:id', updateCurrencyById);
+router.patch('/:id', verifyAdminAccessToken, updateCurrencyById);
 
 export default router;

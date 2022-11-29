@@ -34,8 +34,6 @@ export const options = {
     },
 };
 
-
-
 const ExchangeHistory = ({ exchange }) => {
     const dataChronological = [...exchange]?.reverse();
     const labels = dataChronological?.map(item => item.updatedAt);

@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { decode } from "jsonwebtoken";
 import bcryptjs from 'bcryptjs'
 import sequelize from "../models/index.js";
 
@@ -89,11 +89,13 @@ export const loginUser = async (req, res, next) => {
         const accessToken = jwt.sign({
             id: foundUser.id, 
             username: foundUser.username,
+            isAdmin: foundUser.isAdmin
         }, process.env.ACCESS_TOKEN_SECRET,  { expiresIn: '10s' });
 
         const newRefreshToken = jwt.sign({
             id: foundUser.id, 
             username: foundUser.username,
+            isAdmin: foundUser.isAdmin
         }, process.env.REFRESH_TOKEN_SECRET,  { expiresIn: '1m' });
         
         // if a RT is provided
@@ -224,7 +226,6 @@ export const refreshToken = async (req, res) => {
 
         // verify refreshToken
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        console.log(decoded)
 
         // tampered
         if (foundUserId !== decoded.id) {
@@ -235,11 +236,13 @@ export const refreshToken = async (req, res) => {
         const accessToken = jwt.sign({
             id: decoded.id, 
             username: decoded.username,
+            isAdmin: decoded.isAdmin
         }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
 
         const newRefreshToken = jwt.sign({
             id: decoded.id, 
             username: decoded.username,
+            isAdmin: decoded.isAdmin
         }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1m' });
 
         // Saving refreshToken with current user
