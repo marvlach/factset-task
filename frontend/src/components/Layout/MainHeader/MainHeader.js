@@ -1,11 +1,10 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector} from 'react-redux';
 import styles from './MainHeader.module.css';
-import Button from '../../UI/Button/Button';
 import { useLogoutMutation } from '../../../api/userApiSlice';
 import { userActions } from '../../../store/userSlice';
 
-const MainHeader = (props) => {
+const MainHeader = () => {
     const user = useSelector(store => store.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();

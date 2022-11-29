@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Button from "../Button/Button";
 import Card from "../Card/Card"
 import styles from './Message.module.css';
 const Message = (props) => {

@@ -24,7 +24,6 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(form)
         const reqBody = {
             username: form.username.trim(),
             password: form.password.trim(),
@@ -32,7 +31,6 @@ const Login = () => {
 
         try {
             const response = await login(reqBody).unwrap();
-            console.log(response)
             dispatch(userActions.login({
                 token: response.token,
             }))

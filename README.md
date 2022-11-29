@@ -14,7 +14,7 @@ To stop the app:
 ```
 sh ./stop_app.sh
 ```
-
+React app will run on http://localhost:3000, while node on http://localhost:8000
 - To run locally:
 You need node version >= 16 and a mySQL running in localhost
 

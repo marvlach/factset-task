@@ -1,6 +1,6 @@
 import Modal from '../../../../components/UI/Modal/Modal.js'
 import Input from '../../../../components/UI/Input/Input.js'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import styles from './AddExchangeModal.module.css';
 import Button from '../../../../components/UI/Button/Button.js';
 
@@ -52,7 +52,8 @@ const AddExchangeModal = ({ currencyOptions, closeExchangeModal, handleSubmitNew
                     input = {{
                         className: styles['form-field'],
                         type: 'number',
-                        min: '0.000001',
+                        min: '0.0001',
+                        step: '0.0001',
                         id: 'exchangeValue',
                         value: exchange,
                         onChange: handleFieldChange
