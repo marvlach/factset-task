@@ -1,11 +1,13 @@
 
 import styles from './AdminPanel.module.css';
 
-const AdminPanel = ({ openCurrencyModal, openExchangeModal }) => {
+const AdminPanel = ({ openCurrencyModal, openExchangeModal, openDeleteCurrencyModal }) => {
 
     const handleOpenNewCurrency = () => { openCurrencyModal(); }
     
     const handleOpenNewExchange = () => { openExchangeModal(); }
+
+    const handleOpenDeleteCurrency = () => { openDeleteCurrencyModal(); }
 
     return (<>
         <div className={styles["dropdown"]}>
@@ -13,6 +15,7 @@ const AdminPanel = ({ openCurrencyModal, openExchangeModal }) => {
             <div className={styles["dropdown-content"]}>
                 <span onClick={handleOpenNewCurrency}>Create New Currency</span>
                 <span onClick={handleOpenNewExchange}>Create New Exchange Rate</span>
+                <span onClick={handleOpenDeleteCurrency}>Delete Currency</span>
             </div>
         </div>
     </>)

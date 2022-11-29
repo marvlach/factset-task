@@ -14,6 +14,7 @@ const AddCurrencyModal = ({ closeCurrencyModal, handleSubmitNewCurrency }) => {
     const handleNewCurrencySubmit = (event) => {
         event.preventDefault();
         handleSubmitNewCurrency(currencyInput);
+        setCurrencyInput('')
     }
     
     const formIsValid = currencyInput.trim() !== '';

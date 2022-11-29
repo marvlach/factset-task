@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import Button from '../../../../components/UI/Button/Button.js';
 import Card from '../../../../components/UI/Card/Card.js'
 import styles from './ExchangeRateSelector.module.css';
 
-const ExchangeRateSelector = ({ currency, fromInput, setFromInput, toInput, setToInput, handleSubmit }) => {
+const ExchangeRateSelector = ({ currency, handleSubmit }) => {
+    const [fromInput, setFromInput] = useState('0');
+    const [toInput, setToInput] = useState('0');
 
     const handleFieldChange = (event) => {
         if (event.target.getAttribute('id') === 'from') {
@@ -14,7 +17,9 @@ const ExchangeRateSelector = ({ currency, fromInput, setFromInput, toInput, setT
 
     const handleSearchExchange = (event) => {
         event.preventDefault();
-        handleSubmit();
+        handleSubmit(fromInput, toInput);
+        setFromInput('0');
+        setToInput('0');
     }
     
     const optionsArray = currency?.map(cur => <option key={cur.id} value={cur.id}>{cur.name}</option>);

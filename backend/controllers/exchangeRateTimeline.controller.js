@@ -84,7 +84,7 @@ export const createExchange = async (req, res, next) => {
         });
 
         let reverse = false;
-        if (foundExchange.fromId === to && foundExchange.toId === from) {
+        if (foundExchange.fromId == to && foundExchange.toId == from) {
             reverse = true;
         }
 

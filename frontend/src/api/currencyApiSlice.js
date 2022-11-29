@@ -1,6 +1,7 @@
 import { apiSlice } from "./apiSlice.js";
 
 export const currencyApiSlice = apiSlice.injectEndpoints({
+    tagTypes: ['Currency', 'Exchange'],
     endpoints: builder => ({
         getCurrencies: builder.query({
             query: () => ({
@@ -29,6 +30,14 @@ export const currencyApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Currency'],
         }),
+        deleteCurrency: builder.mutation({
+            query: (id) => ({
+                url: `/currency/${id}`,
+                method: 'DELETE',
+                body:{}
+            }),
+            invalidatesTags: ['Currency', 'Exchange'],
+        }),
         addExchange: builder.mutation({
             query: body => ({
                 url: '/exchange',
@@ -37,19 +46,6 @@ export const currencyApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Exchange'],
         })
-        /*
-        getUser: builder.query({
-            query: () => ({
-                url: '/user',
-                method: 'GET',
-            })
-        }),
-        logout: builder.mutation({
-            query: () => ({
-                url: '/user/logout',
-                method: 'POST',
-            })
-        }), */
     })
 })
 
@@ -59,5 +55,6 @@ export const {
     useGetExchangeQuery, 
     useLazyGetExchangeQuery,
     useAddCurrencyMutation,
-    useAddExchangeMutation
+    useAddExchangeMutation,
+    useDeleteCurrencyMutation
 } = currencyApiSlice

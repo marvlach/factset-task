@@ -16,7 +16,7 @@ import styles from './ExchangeRateDisplay.module.css';
 */
 const ExchangeRateDisplay = ({ exchange }) => {
     return (
-        <>{exchange !== null && 
+        <>{exchange !== undefined && 
         <Card className={styles['card']}>
             <>
                 {exchange?.length === 0 ? 

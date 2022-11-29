@@ -2,38 +2,57 @@ import AdminPanel from "./components/AdminPanel/AdminPanel"
 import ExchangeRateDisplay from "./components/ExchangeRateDisplay/ExchangeRateDisplay"
 import ExchangeRateSelector from "./components/ExchangeRateSelector/ExchangeRateSelector"
 import { useSelector } from 'react-redux';
-import { useAddCurrencyMutation, useAddExchangeMutation, useGetCurrenciesQuery, useLazyGetExchangeQuery } from "../../api/currencyApiSlice";
+import { useAddCurrencyMutation, useAddExchangeMutation, useDeleteCurrencyMutation, useGetCurrenciesQuery, useLazyGetExchangeQuery } from "../../api/currencyApiSlice";
 import { useState } from "react";
 import AddCurrencyModal from "./components/AddCurrencyModal/AddCurrencyModal";
 import AddExchangeModal from "./components/AddExchangeModal/AddExchangeModal";
+import DeleteCurrencyModal from "./components/DeleteCurrencyModal/DeleteCurrencyModal";
+
 const Currency = () => {
 
+    // global state
     const user = useSelector(store => store.user.user);
-    const [fromInput, setFromInput] = useState('0');
-    const [toInput, setToInput] = useState('0');
-    const [exchange, setExchange] = useState(null);
+
+    // modal state
     const [currencyModalOpen, setcurrencyModalOpen] = useState(false);
+    const [deleteCurrencyModalOpen, setDeleteCurrencyModalOpen] = useState(false);
     const [exchangeModalOpen, setExchangeModalOpen] = useState(false);
 
+    // data state
     const { data: currencyData, error: currencyError, isLoading: currencyIsLoading } = useGetCurrenciesQuery();
-    const [getExchange, { error: exchangeError, isLoading: exchangeIsLoading }] = useLazyGetExchangeQuery();
+    const [getExchange, { data: exchangeData, error: exchangeError, isLoading: exchangeIsLoading }] = useLazyGetExchangeQuery();
     const [addCurrency, { isLoading: addCurrencyIsLoading, error: addCurrencyError }] = useAddCurrencyMutation();
     const [addExchange, { isLoading: addExchangeIsLoading, error: addExchangeError }] = useAddExchangeMutation();
+    const [deleteCurrency, { isLoading: deleteCurrencyIsLoading, error: deleteCurrencyError }] = useDeleteCurrencyMutation();
 
+    // event handlers
     const openCurrencyModal = () => { setcurrencyModalOpen(true); }
     
     const closeCurrencyModal = () => { setcurrencyModalOpen(false); }
+
+    const openDeleteCurrencyModal = () => { setDeleteCurrencyModalOpen(true); }
+    
+    const closeDeleteCurrencyModal = () => { setDeleteCurrencyModalOpen(false); }
 
     const openExchangeModal = () => { setExchangeModalOpen(true); }
 
     const closeExchangeModal = () => { setExchangeModalOpen(false); }
 
-    const handleExchangeSearchSubmit = async () => {
+    const handleExchangeSearchSubmit = async (fromInput, toInput) => {
         try {
-            const response = await getExchange({fromId: fromInput, toId: toInput, latest: true});
-            setExchange(response.data);
+            await getExchange({fromId: fromInput, toId: toInput, latest: true});
         } catch (error) {
             console.log('error', error)
+        }
+    }
+
+    const handleDeleteCurrency = async (id) => {
+        try {
+            await deleteCurrency(id);
+        } catch (error) {
+            console.log('error', error)
+        } finally {
+            closeDeleteCurrencyModal();
         }
     }
 
@@ -49,43 +68,57 @@ const Currency = () => {
 
     const handleSubmitNewExchange = async ({from, to, newRate}) => {
         try {
-            ///await addCurrency({name: currency}).unwrap();
-            console.log(from, to, newRate);
+            await addExchange({from, to, rate: newRate}).unwrap();
         } catch (error) {
             console.log('error', error)
         } finally {
-            closeCurrencyModal();
+            closeExchangeModal();
         }
     }
 
+    // passing data
     const currencyOptions =  !currencyError && !currencyIsLoading ? [{id:0, name: '-'}, ...currencyData] : [];
-    const exchangeDisplay = !exchangeError && !exchangeIsLoading ? exchange : {};
+    const exchangeDisplay = !exchangeError && !exchangeIsLoading ? exchangeData : {};
 
+    // jsx
     return (
         <>
-            {user.isAdmin && <AdminPanel openCurrencyModal={openCurrencyModal} openExchangeModal={openExchangeModal}/>}
+            {user.isAdmin && 
+            <AdminPanel 
+                openCurrencyModal={openCurrencyModal} 
+                openExchangeModal={openExchangeModal}
+                openDeleteCurrencyModal={openDeleteCurrencyModal}
+            />}
+
             <ExchangeRateSelector 
                 currency={currencyOptions} 
-                fromInput={fromInput} 
-                setFromInput={setFromInput}
-                toInput={toInput}
-                setToInput={setToInput}
                 handleSubmit={handleExchangeSearchSubmit}
             />
+
             <ExchangeRateDisplay 
                 exchange={exchangeDisplay}
             />
+
             {currencyModalOpen && 
             <AddCurrencyModal 
                 closeCurrencyModal={closeCurrencyModal}
                 handleSubmitNewCurrency={handleSubmitNewCurrency}
             />}
+
             {exchangeModalOpen && 
             <AddExchangeModal 
                 currencyOptions={currencyOptions}
                 closeExchangeModal={closeExchangeModal}
                 handleSubmitNewExchange={handleSubmitNewExchange}
             />}
+
+            {deleteCurrencyModalOpen && 
+            <DeleteCurrencyModal 
+                currencyOptions={currencyOptions}
+                closeDeleteCurrencyModal={closeDeleteCurrencyModal}
+                handleDeleteCurrency={handleDeleteCurrency}
+            />
+            }
         </>
     )
 }

@@ -32,7 +32,7 @@ const AddExchangeModal = ({ currencyOptions, closeExchangeModal, handleSubmitNew
     }
 
     const optionsArray = currencyOptions?.map(cur => <option key={cur.id} value={cur.id}>{cur.name}</option>);
-    const submitDisabled = fromInput === '0' ||  toInput === '0' || exchange.trim() === '';
+    const submitDisabled = fromInput === '0' ||  toInput === '0' || fromInput === toInput || exchange.trim() === '';
     
     return(
         <Modal closeModal={closeExchangeModal}>
