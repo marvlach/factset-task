@@ -9,9 +9,10 @@ import  sequelize from './models/index.js'
 
 import { createDB } from './models/createDB.js'
 
-await createDB(sequelize);
 import userRoutes from './routes/user.routes.js';
 import rootRoutes from './routes/root.routes.js';   
+import currencyRoutes from './routes/currency.routes.js';
+import exchangeRoutes from './routes/exchange.routes.js';
 /* 
 import personRoutes from './routes/person.routes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -50,6 +51,8 @@ app.set('query parser', 'simple');
 // ROUTES
 app.use('/', rootRoutes);
 app.use('/user', userRoutes);
+app.use('/currency', currencyRoutes);
+app.use('/exchange', exchangeRoutes);
 
 
 
@@ -85,6 +88,7 @@ try {
       console.log(error);
     } 
 })(); */
+await createDB(sequelize);
 
 app.listen(PORT, (error) =>{
     if(!error)

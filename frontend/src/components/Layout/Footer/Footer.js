@@ -1,4 +1,3 @@
-import Card from "../../UI/Card/Card";
 import styles from './Footer.module.css';
 
 const Footer = () => {

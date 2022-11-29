@@ -1,33 +1,34 @@
 .button-container {
     display: flex;
     justify-content: center;
+    margin: 1rem;
 }
 
-button {
+.button-container button {
     font: inherit;
     border: 1px solid #4f005f;
     background: #4f005f;
     color: white;
     padding: 0.75rem 3.5rem;
     cursor: pointer;
-    font-size: 1.15rem;
-    border-radius: 30px;
+    font-size: 1rem;
+    border-radius: 1rem;
 }
   
-button:hover,
-button:active {
+.button-container button:hover,
+.button-container button:active {
     background: #741188;
     border-color: #741188;
 }
   
-button:focus {
+.button-container button:focus {
     outline: none;
 }
   
-button:disabled,
-button:focus:disabled,
-button:hover:disabled,
-button:active:disabled {
+.button-container button:disabled,
+.button-container button:focus:disabled,
+.button-container button:hover:disabled,
+.button-container button:active:disabled {
     background: #ccc;
     border-color: #ccc;
     color: #666666;
