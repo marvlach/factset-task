@@ -7,6 +7,8 @@ import { useState } from "react";
 import AddCurrencyModal from "./components/AddCurrencyModal/AddCurrencyModal";
 import AddExchangeModal from "./components/AddExchangeModal/AddExchangeModal";
 import DeleteCurrencyModal from "./components/DeleteCurrencyModal/DeleteCurrencyModal";
+import Spinner from "../../components/UI/Spinner/Spinner";
+import Message from "../../components/UI/Message/Message";
 
 const Currency = () => {
 
@@ -79,10 +81,12 @@ const Currency = () => {
     // passing data
     const currencyOptions =  !currencyError && !currencyIsLoading ? [{id:0, name: '-'}, ...currencyData] : [];
     const exchangeDisplay = !exchangeError && !exchangeIsLoading ? exchangeData : [];
-
+    const error = addCurrencyError || addExchangeError || deleteCurrencyError;
     // jsx
     return (
         <>
+            {error && <Message type='error' message={error?.data?.message || error?.error}/>}
+            { (addCurrencyIsLoading || addExchangeIsLoading || deleteCurrencyIsLoading) && <Spinner />}
             {user.isAdmin && 
             <AdminPanel 
                 openCurrencyModal={openCurrencyModal} 

@@ -3,6 +3,7 @@ import { useDispatch, useSelector} from 'react-redux';
 import styles from './MainHeader.module.css';
 import { useLogoutMutation } from '../../../api/userApiSlice';
 import { userActions } from '../../../store/userSlice';
+import Spinner from '../../UI/Spinner/Spinner';
 
 const MainHeader = () => {
     const user = useSelector(store => store.user);
@@ -12,7 +13,7 @@ const MainHeader = () => {
     const activeStyle = {
         textDecoration: "underline",
     };
-    const [logout, { isLoading, error }] = useLogoutMutation();
+    const [logout, { isLoading }] = useLogoutMutation();
 
     const handleLogout = async () => {
         console.log('hello')
@@ -60,7 +61,8 @@ const MainHeader = () => {
     loggedInMenuItems.map(item => <li key={item.key}>{item.label}</li>) : 
     notLoggedInMenuItems.map(item => <li key={item.key}>{item.label}</li>)
 
-    return (
+    return (<>
+        {isLoading && <Spinner />}
         <header className={styles['main-header']}>
             <h1>Currency Calculator</h1>
             <nav className={styles['nav']}>
@@ -69,7 +71,7 @@ const MainHeader = () => {
                 </ul>
             </nav>
         </header>
-    );
+    </>);
 };
 
 export default MainHeader;

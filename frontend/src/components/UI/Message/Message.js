@@ -13,7 +13,7 @@ const Message = (props) => {
     return(
         <>
         {open && <Card className={`${styles[style]} ${styles['message-container']}`}>
-            {props.message}
+            {props?.message ?? 'An error occured'}
             <button className={styles['little-X']} onClick={handleClose}>X</button>
         </Card>}
         </>
