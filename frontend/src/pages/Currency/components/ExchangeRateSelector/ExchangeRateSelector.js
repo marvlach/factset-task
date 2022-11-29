@@ -17,7 +17,7 @@ const ExchangeRateSelector = ({ currency, handleSubmit }) => {
 
     const handleSearchExchange = (event) => {
         event.preventDefault();
-        handleSubmit(fromInput, toInput);
+        handleSubmit(fromInput, toInput)
         setFromInput('0');
         setToInput('0');
     }

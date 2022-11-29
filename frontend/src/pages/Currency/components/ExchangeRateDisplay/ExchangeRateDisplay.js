@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import Button from '../../../../components/UI/Button/Button';
 import Card from '../../../../components/UI/Card/Card';
+import ExchangeHistory from '../ExchangeHistory/ExchangeHistory';
 import styles from './ExchangeRateDisplay.module.css';
 
 /* 
@@ -14,7 +16,9 @@ import styles from './ExchangeRateDisplay.module.css';
 @       updatedAt
 @   }]
 */
-const ExchangeRateDisplay = ({ exchange }) => {
+const ExchangeRateDisplay = ({ exchange, handleExchangeSearchSubmit }) => {
+
+
     return (
         <>{exchange !== undefined && 
         <Card className={styles['card']}>
@@ -24,7 +28,8 @@ const ExchangeRateDisplay = ({ exchange }) => {
                     <>
                         <span>{exchange[0]?.from} {`->`} {exchange[0]?.to}</span> 
                         <span className={styles['rate']} >{Number.parseFloat(exchange[0]?.rate).toFixed(4)}</span>
-                        <Button className={styles['history-button']}> Show history </Button> 
+                        
+                        <ExchangeHistory exchange={exchange}/>
                     </> 
                 }
             </>

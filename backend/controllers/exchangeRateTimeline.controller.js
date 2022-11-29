@@ -1,6 +1,6 @@
 
 import sequelize from "../models/index.js";
-import { Op, fn, col } from 'sequelize';
+import { Op, } from 'sequelize';
 
 
 // GET exchange/
@@ -29,7 +29,7 @@ export const getExchanges = async (req, res, next) => {
             order: [
                 ['updatedAt', 'DESC'],
             ],
-            limit: latest ? 1 : null
+            ...(latest && {limit: 1}),
         })
 
         // may need to reverse        

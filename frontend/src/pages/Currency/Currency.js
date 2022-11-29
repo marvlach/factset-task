@@ -38,9 +38,9 @@ const Currency = () => {
 
     const closeExchangeModal = () => { setExchangeModalOpen(false); }
 
-    const handleExchangeSearchSubmit = async (fromInput, toInput) => {
+    const handleExchangeSearchSubmit = async (fromInput, toInput, latest=undefined) => {
         try {
-            await getExchange({fromId: fromInput, toId: toInput, latest: true});
+            await getExchange({fromId: fromInput, toId: toInput, latest});
         } catch (error) {
             console.log('error', error)
         }
@@ -78,7 +78,7 @@ const Currency = () => {
 
     // passing data
     const currencyOptions =  !currencyError && !currencyIsLoading ? [{id:0, name: '-'}, ...currencyData] : [];
-    const exchangeDisplay = !exchangeError && !exchangeIsLoading ? exchangeData : {};
+    const exchangeDisplay = !exchangeError && !exchangeIsLoading ? exchangeData : [];
 
     // jsx
     return (
@@ -97,6 +97,7 @@ const Currency = () => {
 
             <ExchangeRateDisplay 
                 exchange={exchangeDisplay}
+                handleExchangeSearchSubmit={handleExchangeSearchSubmit}
             />
 
             {currencyModalOpen && 
