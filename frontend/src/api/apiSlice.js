@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { userActions } from '../store/userSlice';
+const API_URL = process.env.REACT_APP_API;
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:8000',
+    baseUrl: API_URL,
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => { 
         const token = getState().user.accessToken
