@@ -52,6 +52,7 @@ const AddExchangeModal = ({ currencyOptions, closeExchangeModal, handleSubmitNew
                     input = {{
                         className: styles['form-field'],
                         type: 'number',
+                        min: '0.000001',
                         id: 'exchangeValue',
                         value: exchange,
                         onChange: handleFieldChange

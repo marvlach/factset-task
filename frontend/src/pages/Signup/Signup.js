@@ -197,7 +197,6 @@ const Signup = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(form);
         const reqBody = {
             username: form.username.value,
             password: form.password.value,

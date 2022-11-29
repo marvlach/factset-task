@@ -42,7 +42,7 @@ export const createCurrency = async (req, res, next) => {
 
         const allCurrencies = await sequelize.models.Currency.findAll({}, { transaction: t });
 
-        console.log(allCurrencies.length)
+        //console.log(allCurrencies.length)
         const mapCurrencyToId = {
             [createdCurrency.name]: createdCurrency.id
         }
@@ -74,25 +74,17 @@ export const createCurrency = async (req, res, next) => {
 
         });
 
-        const exchangesCreated = await sequelize.models.ExchangeRate.bulkCreate(exchangeRatesToBeCreated, {transaction: t, returning: true});
+        const exchangesCreated = await sequelize.models.ExchangeRate.bulkCreate(
+            exchangeRatesToBeCreated, 
+            {transaction: t, returning: true}
+        );
 
-        console.log(exchangesCreated);
-
-        /* const mapExchangeToId = {}
-        exchangesCreated.forEach(item => {
-            mapExchangeToId[item.comboKey] = item.id
-        });
-
-        const bulkCreateExchangeRateTimelines = [];
-        exchangesCreated.forEach(exchange => {
-            bulkCreateExchangeRateTimelines.push({
-                exchangeRateId: mapExchangeToId[exchange.comboKey],
-                rate: null
-            })
-        })
-
-        const timelinesCreated = await sequelize.models.ExchangeRateTimeline.bulkCreate(bulkCreateExchangeRateTimelines, {transaction: t, returning: true});
-        console.log(timelinesCreated) */
+        const selfExchangeRate = exchangesCreated.filter(item => item.fromId === createdCurrency.id && item.toId === createdCurrency.id)
+        
+        const selfExchangeRateTimeline = await sequelize.models.ExchangeRateTimeline.create({
+            exchangeRateId: selfExchangeRate[0].id,
+            rate: 1
+        }, {transaction: t})
 
 
         await t.commit();

@@ -31,7 +31,6 @@ const ProtectedRoute = ({ children, }) => {
     if (user.isAuth) {
       	return children ? children : <Outlet />;
     }
-    console.log(getUserError)
     return ( 
         <>
             {getUserError && <Navigate to='/login' replace={true} state={{from: location, unathorized: true}}/>}

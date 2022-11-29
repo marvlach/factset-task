@@ -7,7 +7,7 @@ import { Op, } from 'sequelize';
 export const getExchanges = async (req, res, next) => {
     try {
         const { from, to, latest } = req.query;
-        console.log(typeof from, typeof to); // ids
+        //console.log(typeof from, typeof to); // ids
         
         const exchanges = await sequelize.models.ExchangeRateTimeline.findAll({
             attributes: ['id', 'rate', 'updatedAt'],

@@ -12,6 +12,15 @@
 }
 
 .little-X {
-    width: 5px; 
-    height: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: brown;
+    width: 1rem; 
+    height: 1rem;
+}
+
+
+.little-X:hover {
+    cursor: pointer;
 }
